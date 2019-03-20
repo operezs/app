@@ -8,59 +8,8 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
-	"./bootstrap/bootstrap.module": [
-		"./src/app/pages/bootstrap/bootstrap.module.ts",
-		"bootstrap-bootstrap-module"
-	],
-	"./charts/charts.module": [
-		"./src/app/pages/charts/charts.module.ts",
-		"default~app-pages-pages-module~charts-charts-module~maps-maps-module",
-		"default~app-pages-pages-module~charts-charts-module",
-		"charts-charts-module"
-	],
-	"./editors/editors.module": [
-		"./src/app/pages/editors/editors.module.ts",
-		"editors-editors-module"
-	],
-	"./extra-components/extra-components.module": [
-		"./src/app/pages/extra-components/extra-components.module.ts",
-		"extra-components-extra-components-module"
-	],
-	"./forms/forms.module": [
-		"./src/app/pages/forms/forms.module.ts",
-		"forms-forms-module"
-	],
-	"./maps/maps.module": [
-		"./src/app/pages/maps/maps.module.ts",
-		"default~app-pages-pages-module~charts-charts-module~maps-maps-module",
-		"default~app-pages-pages-module~maps-maps-module",
-		"default~maps-maps-module~modal-overlays-modal-overlays-module",
-		"maps-maps-module"
-	],
-	"./miscellaneous/miscellaneous.module": [
-		"./src/app/pages/miscellaneous/miscellaneous.module.ts",
-		"miscellaneous-miscellaneous-module"
-	],
-	"./modal-overlays/modal-overlays.module": [
-		"./src/app/pages/modal-overlays/modal-overlays.module.ts",
-		"default~maps-maps-module~modal-overlays-modal-overlays-module",
-		"modal-overlays-modal-overlays-module"
-	],
-	"./tables/tables.module": [
-		"./src/app/pages/tables/tables.module.ts",
-		"default~app-pages-pages-module~tables-tables-module",
-		"tables-tables-module"
-	],
-	"./ui-features/ui-features.module": [
-		"./src/app/pages/ui-features/ui-features.module.ts",
-		"ui-features-ui-features-module"
-	],
 	"app/pages/pages.module": [
 		"./src/app/pages/pages.module.ts",
-		"default~app-pages-pages-module~charts-charts-module~maps-maps-module",
-		"default~app-pages-pages-module~charts-charts-module",
-		"default~app-pages-pages-module~tables-tables-module",
-		"default~app-pages-pages-module~maps-maps-module",
 		"app-pages-pages-module"
 	]
 };
@@ -73,7 +22,7 @@ function webpackAsyncContext(req) {
 			throw e;
 		});
 	}
-	return Promise.all(ids.slice(1).map(__webpack_require__.e)).then(function() {
+	return __webpack_require__.e(ids[1]).then(function() {
 		var id = ids[0];
 		return __webpack_require__(id);
 	});
@@ -156,8 +105,8 @@ var NB_CORE_PROVIDERS = _data_data_module__WEBPACK_IMPORTED_MODULE_7__["DataModu
                 key: 'data.token',
             },
             // TODO: coger de global service
-            baseEndpoint: ' http://ec2-35-180-192-236.eu-west-3.compute.amazonaws.com/api/v1/',
-            // baseEndpoint: ' http://localhost:8000/api/v1/',
+            baseEndpoint: 'http://ec2-35-180-192-236.eu-west-3.compute.amazonaws.com/api/v1/',
+            // baseEndpoint: 'http://localhost:8000/api/v1/',
             login: {
                 alwaysFail: false,
                 endpoint: 'login',
@@ -1448,12 +1397,16 @@ var ReportService = /** @class */ (function () {
         this.global = global;
         this.baseUrl = this.global.apiUrl() + "reports";
     }
-    ReportService.prototype.getReports = function (startDate, endDate, userId, projectId) {
+    ReportService.prototype.getTotalHours = function (userId) {
         var queryParams = '';
-        if (startDate && endDate) {
+        if (userId) {
             queryParams += queryParams.length > 0 ? '&' : '?';
-            queryParams += "startDate=" + startDate + "&endDate=" + endDate;
+            queryParams += "userId=" + userId;
         }
+        return this.http.get(this.baseUrl + "/totalHours" + queryParams);
+    };
+    ReportService.prototype.getReports = function (userId, projectId) {
+        var queryParams = '';
         if (projectId) {
             queryParams += queryParams.length > 0 ? '&' : '?';
             queryParams += "projectId=" + projectId;
@@ -1462,7 +1415,19 @@ var ReportService = /** @class */ (function () {
             queryParams += queryParams.length > 0 ? '&' : '?';
             queryParams += "userId=" + userId;
         }
-        return this.http.get("" + this.baseUrl);
+        return this.http.get("" + this.baseUrl + queryParams);
+    };
+    ReportService.prototype.getReportsByDate = function (userId, startDate, endDate) {
+        var queryParams = '';
+        if (startDate && endDate) {
+            queryParams += queryParams.length > 0 ? '&' : '?';
+            queryParams += "startDate=" + startDate + "&endDate=" + endDate;
+        }
+        if (userId) {
+            queryParams += queryParams.length > 0 ? '&' : '?';
+            queryParams += "userId=" + userId;
+        }
+        return this.http.get("" + this.baseUrl + queryParams);
     };
     ReportService.prototype.getReport = function (id) {
         return this.http.get(this.baseUrl + "/" + id);
@@ -4951,7 +4916,7 @@ __webpack_require__.r(__webpack_exports__);
 // `ng build --env=prod` then `environment.prod.ts` will be used instead.
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 var environment = {
-    production: true,
+    production: false,
 };
 
 
