@@ -217,8 +217,11 @@ var AuthGuardAdmin = /** @class */ (function () {
         var roleName = this.userService.getDecodedAccessToken().roleName;
         return this.authService.isAuthenticated()
             .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["tap"])(function (authenticated) {
-            if (!authenticated || roleName !== 'Admin') {
+            if (!authenticated) {
                 _this.router.navigate(['auth/login']);
+            }
+            if (roleName !== 'Admin') {
+                _this.router.navigate(['pages/home']);
             }
         }));
     };
@@ -2403,6 +2406,9 @@ var UserService = /** @class */ (function () {
     }
     UserService.prototype.getUsers = function () {
         return this.http.get(this.baseUrl);
+    };
+    UserService.prototype.getDevelopers = function () {
+        return this.http.get(this.baseUrl + "/developer");
     };
     UserService.prototype.getUser = function (id) {
         return this.http.get(this.baseUrl + "/" + id);
